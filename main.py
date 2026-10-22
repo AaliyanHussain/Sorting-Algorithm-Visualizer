@@ -34,3 +34,21 @@ class DrawInformation:
         self.bar_width = math.floor((self.width - 150) / len(lst))
         self.bar_height_multiplier = (self.height - 150) / (self.max_val - self.min_val)
         self.start_x = 75 
+    
+    def draw_list(draw_info):
+        lst = draw_info.lst
+
+        for i, val in enumerate(lst):
+            x = draw_info.start_x + i * draw_info.bar_width
+            y = draw_info.height - (val - draw_info.min_val) * draw_info.bar_height_multiplier
+            color = draw_info.Gradients[i % len(draw_info.Gradients)]
+
+            bar_height = draw_info.height - y
+
+            pygame.draw.rect(draw_info.window, color, (x, y, draw_info.bar_width, bar_height))
+
+    def draw(draw_info):
+            draw_info.window.fill(draw_info.Background_color)
+            draw_list(draw_info)
+            pygame.display.update()
+    
