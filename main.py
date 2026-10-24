@@ -23,6 +23,10 @@ class DrawInformation:
 
         self.window = pygame.display.set_mode((width, height))
         pygame.display.set_caption("Sorting Algorithm Visualizer By Aaliyan Hussain")
+        self.reset_img = pygame.image.load("assets/resetbtn.png").convert_alpha()
+        button_x = 800 - self.reset_img.get_width() - 20
+        button_y = 20
+        self.reset_rect = self.reset_img.get_rect(topleft=(button_x, button_y))
         self.set_list(lst)
 
     def set_list(self, lst):
@@ -33,22 +37,12 @@ class DrawInformation:
         self.bar_width = math.floor((self.width - 150) / len(lst))
         self.bar_height_multiplier = (self.height - 150) / (self.max_val - self.min_val)
         self.start_x = 75 
-
-def draw_list(draw_info):
-    lst = draw_info.lst
-
-    for i, val in enumerate(lst):
-        x = draw_info.start_x + i * draw_info.bar_width
-        y = draw_info.height - (val - draw_info.min_val) * draw_info.bar_height_multiplier
-        color = draw_info.Gradients[i % len(draw_info.Gradients)]
-
-        bar_height = draw_info.height - y
-
-        pygame.draw.rect(draw_info.window, color, (x, y, draw_info.bar_width, bar_height))
+        
 
 def draw(draw_info, algo_ops={}, clear_bg=False):
     draw_info.window.fill(draw_info.Background_color)
     draw_list(draw_info, algo_ops, clear_bg)
+    draw_info.window.blit(draw_info.reset_img, draw_info.reset_rect.topleft)
     pygame.display.update()
 
 def generate_starting_list(n, min_val, max_val):
@@ -119,20 +113,25 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-            if event.type != pygame.KEYDOWN:
-                continue
+            
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if draw_info.reset_rect.collidepoint(event.pos) and not sorting:
+                    lst = generate_starting_list(n, min_val, max_val)
+                    draw_info.set_list(lst)
+                    sorting = False
 
-            if event.key == pygame.K_r:
-                lst = generate_starting_list(n, min_val, max_val)
-                draw_info.set_list(lst)
-                sorting = False
-            elif event.key == pygame.K_SPACE and not sorting:
-                sorting = True
-                sorting_algo_generator = sorting_algorithm(draw_info, ascending)
-            elif event.key == pygame.K_a and not sorting:
-                ascending = True
-            elif event.key == pygame.K_d and not sorting:
-                ascending = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    lst = generate_starting_list(n, min_val, max_val)
+                    draw_info.set_list(lst)
+                    sorting = False
+                elif event.key == pygame.K_SPACE and not sorting:
+                    sorting = True
+                    sorting_algo_generator = sorting_algorithm(draw_info, ascending)
+                elif event.key == pygame.K_a and not sorting:
+                    ascending = True
+                elif event.key == pygame.K_d and not sorting:
+                    ascending = False
 
     pygame.quit()
 
