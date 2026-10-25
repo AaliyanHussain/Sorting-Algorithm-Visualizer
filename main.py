@@ -29,6 +29,19 @@ class DrawInformation:
         button_y = 20
         self.reset_rect = self.reset_img.get_rect(topleft=(button_x, button_y))
         self.set_list(lst)
+        self.font = pygame.font.SysFont('arial', 20)
+        self.algo_name = "Bubble Sort"
+        self.bubble_button_rect = pygame.Rect(20, 20, 130, 35)
+        self.insertion_button_rect = pygame.Rect(160, 20, 140, 35)
+
+        self.image_bubble = pygame.transform.scale(pygame.image.load("assets/bubblesort_btn.png").convert_alpha(), (180, 60))
+        self.image_insertion = pygame.transform.scale(pygame.image.load("assets/insertionsort_btn.png").convert_alpha(), (180, 60))
+        self.image_merge = pygame.transform.scale(pygame.image.load("assets/mergesort_btn.png").convert_alpha(), (180, 60))
+
+        self.rect_bubble = self.image_bubble.get_rect(topleft=(40, 20))
+        self.rect_insertion = self.image_insertion.get_rect(topleft=(240,  20))
+        self.rect_merge = self.image_merge.get_rect(topleft=(440, 20))
+                                                   
 
     def set_list(self, lst):
         self.lst = lst
@@ -44,6 +57,10 @@ def draw(draw_info, algo_ops={}, clear_bg=False):
     draw_info.window.fill(draw_info.Background_color)
     draw_list(draw_info, algo_ops, clear_bg)
     draw_info.window.blit(draw_info.reset_img, draw_info.reset_rect.topleft)
+
+    draw_info.window.blit(draw_info.image_bubble, draw_info.rect_bubble)
+    draw_info.window.blit(draw_info.image_insertion, draw_info.rect_insertion)
+    draw_info.window.blit(draw_info.image_merge, draw_info.rect_merge)
     pygame.display.update()
 
 def generate_starting_list(n, min_val, max_val):
@@ -133,6 +150,15 @@ def main():
                     lst = generate_starting_list(n, min_val, max_val)
                     draw_info.set_list(lst)
                     sorting = False
+                elif draw_info.rect_bubble.collidepoint(event.pos) and not sorting:
+                    algo_name = "Bubble Start"
+                    sorting_algo_generator = bubble_sort(draw_info, ascending)
+                elif draw_info.rect_insertion.collidepoint(event.pos) and not sorting:
+                    algo_name = "Insertion Sort"
+                    sorting_algo_generator = insertion_sort(draw_info, ascending)
+                elif draw_info.rect_merge.collidepoint(event.pos) and not sorting:
+                    algo_name = "Merge Sort"
+                    sorting_algo_generator = merge_sort(draw_info, ascending)
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
