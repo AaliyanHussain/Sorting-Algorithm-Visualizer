@@ -20,6 +20,7 @@ class DrawInformation:
     def __init__(self, width, height, lst):
         self.width = width
         self.height = height
+        self.bubble_button_rect = pygame.Rect(20, 20, 130, 35)
 
         self.window = pygame.display.set_mode((width, height))
         pygame.display.set_caption("Sorting Algorithm Visualizer By Aaliyan Hussain")
@@ -83,6 +84,19 @@ def bubble_sort(draw_info, ascending=True):
                 yield True
     return lst
 
+def insertion_sort(draw_info, ascending=True):
+    lst = draw_info.lst
+    for i in range(1, len(lst)):
+        current = lst[i]
+        j = i - 1
+
+        while j >= 0 and ((lst[j] > current) if ascending else (lst[j] < current)):
+            lst[j + 1] = lst[j]
+            j -= 1
+            yield {j + 1: draw_info.Green, j: draw_info.Red}, True
+        lst[j + 1] = current
+        yield {j + 1: draw_info.Green}, True
+
 def main():
     run = True
     clock = pygame.time.Clock()
@@ -132,6 +146,7 @@ def main():
                     ascending = True
                 elif event.key == pygame.K_d and not sorting:
                     ascending = False
+                
 
     pygame.quit()
 
