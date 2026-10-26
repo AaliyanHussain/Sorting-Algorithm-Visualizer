@@ -61,6 +61,9 @@ def draw(draw_info, algo_ops={}, clear_bg=False):
     draw_info.window.blit(draw_info.image_bubble, draw_info.rect_bubble)
     draw_info.window.blit(draw_info.image_insertion, draw_info.rect_insertion)
     draw_info.window.blit(draw_info.image_merge, draw_info.rect_merge)
+
+    mode_text = draw_info.font.render(f"Current Mode: {draw_info.algo_name}", True, (255, 255, 255))
+    draw_info.window.blit(mode_text, (40, 90))
     pygame.display.update()
 
 def generate_starting_list(n, min_val, max_val):
@@ -113,6 +116,48 @@ def insertion_sort(draw_info, ascending=True):
             yield {j + 1: draw_info.Green, j: draw_info.Red}, True
         lst[j + 1] = current
         yield {j + 1: draw_info.Green}, True
+
+def merge_sort(draw_info, ascending=True):
+    lst = draw_info.lst
+
+    def merge(start, mid, end):
+        left = lst[start:mid]
+        right = lst[mid:end]
+        i = j = 0
+        k = start
+
+        while i < len(left) and j < len(right):
+            if (left[i] <= right[j]) if ascending else (left[i] >= right[j]):
+                lst[k] = left[i]
+                i += 1
+            else:
+                lst[k] = left[i]
+
+            draw(draw_info, {k: draw_info.GREEN}, True)
+            yield
+            k += 1
+        while i < len(left):
+            lst[k] = left[i]
+            draw(draw_info, {k: draw_info.GREEN}, True)
+            yield
+            i += 1
+            k += 1
+
+        while j < len(right):
+            lst[k] = right[j]
+            draw(draw_info, {k: draw_info.GREEN}, True)
+            yield
+            j += 1
+            k += 1
+
+    def merge_sort_rec(start, end):
+        if end - start > 1:
+            mid = (start + end) // 2
+            yield from merge_sort_rec(start, mid)
+            yield from merge_sort_rec(mid, end)
+            yield from merge(start, mid, end)
+
+    yield from merge_sort_rec(0, len(lst))
 
 def main():
     run = True
