@@ -34,7 +34,16 @@ A custom-built interactive sorting algorithm visualizer developed in **Python** 
 
 ---
 
-## Getting Started
+## Complexity
+
+| Algorithm | Best Time | Average Time | Worst Time | Space Complexity |
+| :--- | :--- | :--- | :--- | :--- |
+| **Bubble Sort** | O(n) | O(n²) | O(n²) | O(1) |
+| **Insertion Sort** | O(n) | O(n²) | O(n²) | O(1) |
+| **Merge Sort** | O(n log n) | O(n log n) | O(n log n) | O(n) |
+
+---
+
 
 ### Prerequisites
 
