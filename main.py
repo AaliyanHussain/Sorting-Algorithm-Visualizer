@@ -6,7 +6,7 @@ pygame.init()
 class DrawInformation:
     Black = (22, 24, 29)
     White = (240, 240, 240)
-    Green = (46, 160, 115)
+    GREEN = (46, 160, 115)
     Red = (212, 143, 56)
     Grey = (70, 75, 85)
     Background_color = (22, 24, 29)
@@ -34,9 +34,9 @@ class DrawInformation:
         self.bubble_button_rect = pygame.Rect(20, 20, 130, 35)
         self.insertion_button_rect = pygame.Rect(160, 20, 140, 35)
 
-        self.image_bubble = pygame.transform.scale(pygame.image.load("assets/bubblesort_btn.png").convert_alpha(), (180, 60))
-        self.image_insertion = pygame.transform.scale(pygame.image.load("assets/insertionsort_btn.png").convert_alpha(), (180, 60))
-        self.image_merge = pygame.transform.scale(pygame.image.load("assets/mergesort_btn.png").convert_alpha(), (180, 60))
+        self.image_bubble = pygame.transform.scale(pygame.image.load("assets/bubblesort_btn.png").convert_alpha(), (152, 68))
+        self.image_insertion = pygame.transform.scale(pygame.image.load("assets/insertionsort_btn.png").convert_alpha(), (158, 70))
+        self.image_merge = pygame.transform.scale(pygame.image.load("assets/mergesort_btn.png").convert_alpha(), (154, 70))
 
         self.rect_bubble = self.image_bubble.get_rect(topleft=(40, 20))
         self.rect_insertion = self.image_insertion.get_rect(topleft=(240,  20))
@@ -100,7 +100,7 @@ def bubble_sort(draw_info, ascending=True):
 
             if (num1 > num2 and ascending) or (num1 < num2 and not ascending):
                 lst[j], lst[j + 1] = lst[j + 1], lst[j]
-                draw(draw_info, {j: draw_info.Green, j + 1: draw_info.Red}, True)
+                draw(draw_info, {j: draw_info.GREEN, j + 1: draw_info.Red}, True)
                 yield True
     return lst
 
@@ -112,10 +112,12 @@ def insertion_sort(draw_info, ascending=True):
 
         while j >= 0 and ((lst[j] > current) if ascending else (lst[j] < current)):
             lst[j + 1] = lst[j]
+            draw(draw_info, {j + 1: draw_info.GREEN, j: draw_info.Red}, True)
             j -= 1
-            yield {j + 1: draw_info.Green, j: draw_info.Red}, True
+            yield True
         lst[j + 1] = current
-        yield {j + 1: draw_info.Green}, True
+        draw(draw_info, {j + 1: draw_info.GREEN}, True)
+        yield True
 
 def merge_sort(draw_info, ascending=True):
     lst = draw_info.lst
@@ -131,7 +133,8 @@ def merge_sort(draw_info, ascending=True):
                 lst[k] = left[i]
                 i += 1
             else:
-                lst[k] = left[i]
+                lst[k] = right[j]
+                j += 1
 
             draw(draw_info, {k: draw_info.GREEN}, True)
             yield
@@ -168,7 +171,7 @@ def main():
     max_val = 100
 
     lst = generate_starting_list(n, min_val, max_val)
-    draw_info = DrawInformation(800, 600, lst)
+    draw_info = DrawInformation(800, 700, lst)
 
     sorting = False
     ascending = True
@@ -196,14 +199,17 @@ def main():
                     draw_info.set_list(lst)
                     sorting = False
                 elif draw_info.rect_bubble.collidepoint(event.pos) and not sorting:
-                    algo_name = "Bubble Start"
+                    draw_info.algo_name = "Bubble Sort"
                     sorting_algo_generator = bubble_sort(draw_info, ascending)
+                    sorting = True
                 elif draw_info.rect_insertion.collidepoint(event.pos) and not sorting:
-                    algo_name = "Insertion Sort"
+                    draw_info.algo_name = "Insertion Sort"
                     sorting_algo_generator = insertion_sort(draw_info, ascending)
+                    sorting = True
                 elif draw_info.rect_merge.collidepoint(event.pos) and not sorting:
-                    algo_name = "Merge Sort"
+                    draw_info.algo_name = "Merge Sort"
                     sorting_algo_generator = merge_sort(draw_info, ascending)
+                    sorting = True
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
